@@ -1,0 +1,21 @@
+﻿@using Wordle.Components.Pages.DisplayElements
+
+@page "/wordle"
+@rendermode InteractiveServer
+
+<PageTitle>Wordle</PageTitle>
+
+<h1>Wordle</h1>
+<input type="text" @bind="currentGuess" maxlength="5" placeholder="Enter your guess" />
+<button @onclick="SubmitGuess">Submit</button>
+<WordDisplay />
+<p>Game State: @wordleGame.State</p>
+
+@code {
+    private WordleGame wordleGame = new WordleGame();
+    private string currentGuess;
+    private void SubmitGuess()
+    {
+        wordleGame.SubmitGuess(currentGuess);
+    }
+}

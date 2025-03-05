@@ -1,0 +1,11 @@
+﻿.char-correct {
+    fill: green;
+}
+
+.char-present {
+    fill: yellow;
+}
+
+.char-incorrect {
+    fill: red;
+}
