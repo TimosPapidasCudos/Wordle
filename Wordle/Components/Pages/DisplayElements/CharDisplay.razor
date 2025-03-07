@@ -1,25 +1,19 @@
 ﻿@using Wordle
 
 
-<div class="@CssClass">
+<div class="display circle @CssClass">
     @GuessedChar.GuessedChar
 </div>
 
 @code {
     [Parameter]
-    public GuessChar GuessedChar { get; set; }
+    public required GuessChar GuessedChar { get; set; }
 
-    public CharDisplay(GuessChar guessedChar)
+    private string CssClass => GuessedChar.CorrectState switch
     {
-        GuessedChar = guessedChar;
-    }
-
-    public Correctness CharCorrectness{ get; set; }
-
-    private string CssClass => CharCorrectness switch
-    {
-        Correctness.Correct => "char-correct",
-        Correctness.Present => "char-present",
-        Correctness.Incorrect => "char-incorrect"
+        Correctness.Correct => "correct",
+        Correctness.Present => "present",
+        Correctness.Incorrect => "incorrect",
+        _ => "char-unknown",
     };
 }

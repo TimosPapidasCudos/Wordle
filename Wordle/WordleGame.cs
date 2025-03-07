@@ -18,8 +18,8 @@
         public void SubmitGuess(String guess)
         {
             GuessWord guessedWord = new GuessWord(guess);
-            PreviousGuesses.Add(guessedWord);
             guessedWord.EvaluateWord(TargetWord);
+            PreviousGuesses.Add(guessedWord);
             if (guessedWord.Correct)
             {
                 State = GameState.Won;

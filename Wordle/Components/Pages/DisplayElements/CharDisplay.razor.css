@@ -1,11 +1,34 @@
-﻿.char-correct {
-    fill: green;
+﻿.display {
+    width: 30px;
+    display: inline-flex;
+    border-radius: 50% !important;
+    aspect-ratio: 1;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
 }
 
-.char-present {
-    fill: yellow;
+.circle {
+    border-radius: 50% !important;
+    aspect-ratio: 1;
 }
 
-.char-incorrect {
-    fill: red;
+.rectangle {
+    aspect-ratio: 1.5;
 }
+
+
+.correct {
+    background-color: green;
+}
+
+.present {
+    background-color: yellow;
+}
+
+.incorrect {
+    background-color: lightgrey
+}
+.unknown {
+    background-color: white
+}
+

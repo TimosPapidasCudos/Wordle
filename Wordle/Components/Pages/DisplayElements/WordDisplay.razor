@@ -1,7 +1,11 @@
 ﻿<div>
-    <CharDisplay />
+    @foreach (GuessChar guessChar in GuessedWord.GuessedWord)
+    {
+        <CharDisplay GuessedChar="@guessChar" />
+    }
 </div>
 
 @code {
-
+    [Parameter]
+    public required GuessWord GuessedWord { get; set; }
 }
