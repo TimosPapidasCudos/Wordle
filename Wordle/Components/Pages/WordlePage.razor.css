@@ -1,0 +1,47 @@
+﻿.w-container {
+    gap: 5px;
+}
+
+.w-row {
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.w-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.w-char {
+    display: flex;
+    width: 30px;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.w-circle {
+    border-radius: 50% !important;
+    aspect-ratio: 1;
+}
+
+.w-rectangle {
+    aspect-ratio: 1.5;
+}
+
+
+.correct {
+    background-color: green;
+}
+
+.present {
+    background-color: yellow;
+}
+
+.incorrect {
+    background-color: grey;
+}
+
+.unknown {
+    background-color: lightgrey;
+}
