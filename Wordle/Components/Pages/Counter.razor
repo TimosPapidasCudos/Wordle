@@ -12,6 +12,17 @@
 @code {
     private int currentCount = 0;
 
+    private bool _isinitialized = false;
+
+
+    protected override void OnInitialized()
+    {
+        if (!_isinitialized)
+        {
+            _isinitialized = true;
+        }
+    }
+
     private void IncrementCount()
     {
         currentCount++;

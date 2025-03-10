@@ -8,29 +8,86 @@
 
 <h1>Wordle</h1>
 <div class="w-container w-col">
-    @foreach (WordleChar[] guessedWord in wordleGame.Guesses)
+    @for (int i = 0; i < wordleGame.Guesses.Length; i++)
     {
-        <div class="w-container w-row">
-            @foreach (WordleChar guessedChar in guessedWord)
-            {
-                <div class="w-container w-char w-circle @CssClass(guessedChar)">
-                    @guessedChar.GuessedChar
-                </div>
-            }
-        </div>
+        @if (i == wordleGame.CurrentGuess)
+        {
+            <div class="w-container w-row">
+                @foreach (char c in _guessWord)
+                {
+                    <div class="w-container w-char w-circle unknown">
+                        @c
+                    </div>
+                }
+            </div>
+
+        }
+        else
+        {
+            <div class="w-container w-row">
+                @foreach (WordleChar guessedChar in wordleGame.Guesses[i])
+                {
+                    <div class="w-container w-char w-circle @CssClass(guessedChar)">
+                        @guessedChar.GuessedChar
+                    </div>
+                }
+            </div>
+
+        }
     }
     <KeyboardDisplay />
 </div>
 <p>Game State: @wordleGame.State</p>
 
 @code {
+    private char[] _guessWord;
+    private int _guessWordIndex;
+    private bool _isinitialized = false;
+
+
     protected override void OnInitialized()
     {
-        wordleGame.StateChanged += OnGameStateChanged;
+        if (!_isinitialized)
+        {
+            Initialize();
+            _isinitialized = true;
+        }
+        keyboardService.OnKeyPressed += HandleInput;
     }
 
-    private void OnGameStateChanged()
+    private void Initialize()
     {
+        _guessWord = new char[wordleGame.WordLength];
+        _guessWordIndex = 0;
+    }
+
+    private void HandleInput(char input)
+    {
+        switch (input)
+        {
+            case '\n':
+                if (_guessWordIndex == wordleGame.WordLength)
+                {
+                    wordleGame.SubmitGuess(new String(_guessWord));
+                    _guessWordIndex = 0;
+                    Array.Clear(_guessWord, 0, wordleGame.WordLength);
+                }
+                break;
+            case '\b':
+                if (_guessWordIndex > 0)
+                {
+                    _guessWordIndex--;
+                    _guessWord[_guessWordIndex] = ' ';
+                }
+                break;
+            default:
+                if (input >= 'A' && input <= 'Z' && _guessWordIndex < wordleGame.WordLength)
+                {
+                    _guessWord[_guessWordIndex] = input;
+                    _guessWordIndex++;
+                }
+                break;
+        }
         InvokeAsync(StateHasChanged);
     }
     private string CssClass(WordleChar guessedChar)

@@ -1,26 +1,21 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Wordle
+﻿namespace Wordle
 {
     public class WordleGame
     {
-        public event Action StateChanged;
+        public event Action StateChanged; //Maybe delete
         public string TargetWord { get; private set; }
         public WordleChar[][] Guesses { get; private set; }
+        public int WordLength { get; private set; }
+        public int CurrentGuess { get; private set; }
         public GameState State { get; private set; } = GameState.Playing;
 
         private int _maxGuesses;
-        private int _wordLength;
-        private int _currentGuess = 0;
-        private int _currentChar = 0;
-        private KeyboardService _keyboardService;
 
-        public WordleGame(KeyboardService keyboardService)
+        public WordleGame()
         {
-            _keyboardService = keyboardService;
-            _keyboardService.OnKeyPressed += HandleInput;
             _maxGuesses = 6;
-            _wordLength = 5;
+            WordLength = 5;
+            CurrentGuess = 0;
             TargetWord = "WORDL";
             Initialize();
         }
@@ -30,71 +25,43 @@ namespace Wordle
             Guesses = new WordleChar[_maxGuesses][];
             for (int i = 0; i < _maxGuesses; i++)
             {
-                Guesses[i] = new WordleChar[_wordLength];
-                for (int j = 0; j < _wordLength; j++)
+                Guesses[i] = new WordleChar[WordLength];
+                for (int j = 0; j < WordLength; j++)
                 {
                     Guesses[i][j] = new WordleChar();
                 }
             }
         }
 
-        private void HandleInput(char input)
+        public void SubmitGuess(string guess)
         {
-            switch (input)
+            for (int i = 0; i < guess.Length; i++)
             {
-                case '\n':
-                    if (_currentChar == _wordLength)
-                    {
-                        SubmitGuess();
-                    }
-                    break;
-                case '\b':
-                    if (_currentChar > 0)
-                    {
-                        _currentChar--;
-                        Guesses[_currentGuess][_currentChar].GuessedChar = ' ';
-                    }
-                    break;
-                default:
-                    if (input >= 'A' && input <= 'Z' && _currentChar <= _wordLength)
-                    {
-                        Guesses[_currentGuess][_currentChar].GuessedChar = input;
-                        _currentChar++;
-                    }
-                    break;
-            }
-            StateChanged?.Invoke();
-        }
-
-        public void SubmitGuess()
-        {
-            for (int i = 0; i < Guesses[_currentGuess].Length; i++)
-            {
-                SubmitChar(i);
+                SubmitChar(guess[i], i);
             }
             UpdateGameState();
-            _currentGuess++;
-            _currentChar = 0;
+            CurrentGuess++;
         }
-        private void SubmitChar(int index)
+        private void SubmitChar(char toSubmit, int index)
         {
-            if (Guesses[_currentGuess][index].GuessedChar.Equals(TargetWord[index]))
+            if (toSubmit.Equals(TargetWord[index]))
             {
-                Guesses[_currentGuess][index].CorrectState = Correctness.Correct;
+                Guesses[CurrentGuess][index].CorrectState = Correctness.Correct;
             }
-            else if (TargetWord.Contains(Guesses[_currentGuess][index].GuessedChar))
+            else if (TargetWord.Contains(toSubmit))
             {
-                Guesses[_currentGuess][index].CorrectState = Correctness.Present;
+                Guesses[CurrentGuess][index].CorrectState = Correctness.Present;
             }
             else
             {
-                Guesses[_currentGuess][index].CorrectState = Correctness.Incorrect;
+                Guesses[CurrentGuess][index].CorrectState = Correctness.Incorrect;
             }
+            Guesses[CurrentGuess][index].GuessedChar = toSubmit;
         }
         private void UpdateGameState()
         {
             bool correct = true;
-            foreach (WordleChar g in Guesses[_currentGuess])
+            foreach (WordleChar g in Guesses[CurrentGuess])
             {
                 if (g.CorrectState != Correctness.Correct)
                 {
@@ -105,7 +72,7 @@ namespace Wordle
             {
                 State = GameState.Won;
             }
-            else if (_currentGuess >= _maxGuesses)
+            else if (CurrentGuess >= _maxGuesses)
             {
                 State = GameState.Lost;
             }
